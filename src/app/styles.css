@@ -48,6 +48,10 @@ body {
   padding: 24px 16px 48px;
 }
 
+.shell.shell-wide {
+  max-width: 1040px;
+}
+
 /* ── header ── */
 
 .topbar {
@@ -416,6 +420,64 @@ select:focus-visible,
 .badge.warn {
   color: var(--warn);
   background: color-mix(in srgb, var(--warn) 14%, transparent);
+}
+
+/* ── video editor ── */
+
+.editor {
+  display: grid;
+  gap: 16px;
+}
+
+.editor-drop {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+
+.editor-player-wrap {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+  background: #000;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.timeline {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.timeline input[type='range'] {
+  width: 100%;
+  padding: 0;
+}
+
+.cut-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.cut-list h3 {
+  margin: 0;
+}
+
+.cut-card {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+
+.cut-card p {
+  margin: 2px 0 0;
 }
 
 /* ── password gate ── */

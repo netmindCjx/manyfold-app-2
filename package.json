@@ -17,9 +17,14 @@
     "node": ">=22"
   },
   "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
+    "@remotion/media-utils": "^4.0.509",
+    "@remotion/player": "^4.0.509",
     "hono": "^4.13.1",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "remotion": "^4.0.509"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.51.2",

@@ -9,11 +9,16 @@ import type { AppState } from '../shared/types';
 import { api, onUnauthorized } from './api';
 import ChatView from './components/ChatView';
 import SettingsView from './components/SettingsView';
+import VideoEditor from './components/VideoEditor';
 import PasswordGate from './components/PasswordGate';
 
-type Tab = 'chat' | 'settings';
+type Tab = 'chat' | 'settings' | 'editor';
 
-const tabFromHash = (): Tab => (location.hash === '#settings' ? 'settings' : 'chat');
+const tabFromHash = (): Tab => {
+  if (location.hash === '#settings') return 'settings';
+  if (location.hash === '#editor') return 'editor';
+  return 'chat';
+};
 
 export default function App() {
   const [state, setState] = useState<AppState | null>(null);
@@ -65,7 +70,7 @@ export default function App() {
   }
 
   return (
-    <main className="shell">
+    <main className={tab === 'editor' ? 'shell shell-wide' : 'shell'}>
       <header className="topbar">
         <div className="brand">
           <span className="brand-mark" aria-hidden>
@@ -80,15 +85,20 @@ export default function App() {
           <a className={tab === 'chat' ? 'tab active' : 'tab'} href="#chat">
             Chat
           </a>
+          <a className={tab === 'editor' ? 'tab active' : 'tab'} href="#editor">
+            Editor
+          </a>
           <a className={tab === 'settings' ? 'tab active' : 'tab'} href="#settings">
             Settings
           </a>
         </nav>
       </header>
 
-      {tab === 'chat' ? (
+      {tab === 'chat' && (
         <ChatView agents={state.agents} initialSession={state.connect.session} refreshState={refreshState} />
-      ) : (
+      )}
+      {tab === 'editor' && <VideoEditor />}
+      {tab === 'settings' && (
         <SettingsView agents={state.agents} initialSession={state.connect.session} refreshState={refreshState} />
       )}
 
