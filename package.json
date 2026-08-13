@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
+    "remotion": "remotion studio src/remotion/index.ts",
     "build": "tsc -b && vite build",
     "check": "tsc -b && vite build && wrangler deploy --dry-run",
     "test": "vitest run",
@@ -24,11 +25,13 @@
     "hono": "^4.13.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "remotion": "^4.0.509"
+    "remotion": "^4.0.509",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.51.2",
     "@cloudflare/workers-types": "^5.20260811.1",
+    "@remotion/cli": "^4.0.509",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
