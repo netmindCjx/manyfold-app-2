@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lumen — Data analysis that explains itself</title>
+<meta name="description" content="Connect your data, ask questions in plain English, and get charts and answers your whole team can trust." />
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f9f9f7;
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --ink-muted: #898781;
+    --border: #e1e0d9;
+    --border-strong: #c3c2b7;
+    --accent: #2a78d6;
+    --accent-ink: #ffffff;
+    --accent-soft: #eaf1fc;
+    --good: #0ca30c;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 2px rgba(11,11,11,0.04), 0 8px 24px rgba(11,11,11,0.06);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #0d0d0d;
+      --surface: #1a1a19;
+      --ink: #ffffff;
+      --ink-2: #c3c2b7;
+      --ink-muted: #898781;
+      --border: #2c2c2a;
+      --border-strong: #383835;
+      --accent: #3987e5;
+      --accent-ink: #0b0b0b;
+      --accent-soft: rgba(57,135,229,0.14);
+      --good: #0ca30c;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  a { color: var(--accent); }
+
+  /* nav */
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 17px;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .logo-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: var(--accent);
+    display: grid;
+    place-items: center;
+    color: var(--accent-ink);
+    font-size: 15px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+  }
+
+  .nav-links a {
+    color: var(--ink-2);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  /* buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--border-strong);
+    color: var(--ink);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .btn.primary:hover { opacity: 0.92; }
+  .btn.ghost { background: transparent; }
+  .btn.ghost:hover { background: var(--surface); }
+  .btn.lg { padding: 13px 24px; font-size: 15px; }
+
+  /* hero */
+  .hero {
+    padding: 88px 0 64px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    text-align: center;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 auto 20px;
+  }
+
+  h1.hero-title {
+    font-size: clamp(34px, 5vw, 58px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 auto 18px;
+    max-width: 800px;
+  }
+
+  h1.hero-title .accent { color: var(--accent); }
+
+  .hero-sub {
+    max-width: 560px;
+    margin: 0 auto 32px;
+    color: var(--ink-2);
+    font-size: 18px;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .hero-note {
+    color: var(--ink-muted);
+    font-size: 13px;
+  }
+
+  /* dashboard mock */
+  .mock {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 20px;
+    max-width: 920px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .mock-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mock-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-strong); }
+
+  .mock-title { font-size: 13px; color: var(--ink-muted); margin-left: 4px; }
+
+  .mock-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .stat-tile {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+
+  .stat-label { font-size: 12px; color: var(--ink-muted); margin-bottom: 6px; }
+  .stat-value { font-size: 22px; font-weight: 700; }
+  .stat-delta { font-size: 12px; color: var(--good); margin-top: 4px; font-weight: 600; }
+
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 14px;
+  }
+
+  .chart-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px 8px;
+  }
+
+  .chart-card h4 {
+    margin: 0 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 110px;
+  }
+
+  .bars .bar {
+    flex: 1;
+    background: var(--accent);
+    border-radius: 4px 4px 0 0;
+  }
+
+  .bars .bar.b2 { background: color-mix(in srgb, var(--accent) 55%, var(--surface)); }
+
+  .legend-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+
+  .legend-row span { display: flex; align-items: center; gap: 6px; }
+
+  .swatch { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+
+  .donut-wrap { display: flex; align-items: center; gap: 16px; }
+
+  .donut {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--accent) 0turn 0.52turn,
+      #eb6834 0.52turn 0.78turn,
+      #1baf7a 0.78turn 1turn
+    );
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .donut::after {
+    content: "";
+    position: absolute;
+    inset: 18px;
+    background: var(--surface);
+    border-radius: 50%;
+  }
+
+  .donut-legend { font-size: 12px; color: var(--ink-2); display: grid; gap: 6px; }
+
+  /* sections */
+  section { padding: 64px 0; }
+
+  .section-head {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 44px;
+  }
+
+  .section-head .eyebrow { background: transparent; color: var(--ink-muted); padding: 0; font-size: 13px; margin-bottom: 10px; }
+
+  .section-head h2 {
+    font-size: clamp(26px, 3.4vw, 36px);
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .section-head p { color: var(--ink-2); font-size: 16px; margin: 0; }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .feature-card h3 { margin: 0 0 8px; font-size: 16px; }
+  .feature-card p { margin: 0; color: var(--ink-2); font-size: 14px; }
+
+  /* steps */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    position: relative;
+  }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--bg);
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  .step h3 { margin: 0 0 8px; font-size: 16px; }
+  .step p { margin: 0; color: var(--ink-2); font-size: 14px; }
+
+  /* social proof / stats */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 40px 0;
+  }
+
+  .stats-strip .stat { text-align: center; }
+  .stats-strip .num { font-size: 32px; font-weight: 700; }
+  .stats-strip .label { color: var(--ink-muted); font-size: 13px; margin-top: 4px; }
+
+  /* pricing */
+  .pricing {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .plan {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .plan.featured {
+    border-color: var(--accent);
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: -12px;
+    left: 24px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-radius: 999px;
+    padding: 4px 10px;
+  }
+
+  .plan-name { font-weight: 600; margin-bottom: 6px; }
+  .plan-price { font-size: 32px; font-weight: 700; margin-bottom: 4px; }
+  .plan-price small { font-size: 14px; font-weight: 500; color: var(--ink-muted); }
+  .plan-desc { color: var(--ink-2); font-size: 14px; margin-bottom: 20px; }
+
+  .plan-features {
+    list-style: none;
+    margin: 0 0 24px;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--ink-2);
+    flex: 1;
+  }
+
+  .plan-features li { display: flex; gap: 8px; align-items: baseline; }
+  .plan-features li::before { content: "✓"; color: var(--good); font-weight: 700; }
+
+  /* cta */
+  .cta-band {
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 20px;
+    padding: 56px 40px;
+    text-align: center;
+  }
+
+  .cta-band h2 { margin: 0 0 10px; font-size: clamp(24px, 3vw, 32px); }
+  .cta-band p { margin: 0 0 26px; color: color-mix(in srgb, var(--bg) 70%, transparent); }
+
+  .cta-band .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .cta-band .btn.ghost {
+    color: var(--bg);
+    border-color: color-mix(in srgb, var(--bg) 30%, transparent);
+  }
+
+  /* footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 0 60px;
+    color: var(--ink-muted);
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  footer .foot-links { display: flex; gap: 20px; }
+  footer a { color: var(--ink-muted); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+
+  @media (max-width: 860px) {
+    .features, .steps, .pricing { grid-template-columns: 1fr; }
+    .stats-strip { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+    .chart-row { grid-template-columns: 1fr; }
+    .mock-grid { grid-template-columns: repeat(2, 1fr); }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="logo" href="#top">
+      <span class="logo-mark" aria-hidden>◆</span>
+      Lumen
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+    <div class="row" style="display:flex; gap:10px;">
+      <a class="btn ghost" href="#pricing">Sign in</a>
+      <a class="btn primary" href="#pricing">Start free</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <span class="eyebrow">✳ New — natural-language SQL explanations</span>
+        <h1 class="hero-title">Data analysis that <span class="accent">explains itself</span></h1>
+        <p class="hero-sub">
+          Connect your warehouse, ask a question in plain English, and get a chart, a number,
+          and the reasoning behind it — verifiable, not a black box.
+        </p>
+        <div class="hero-cta">
+          <a class="btn primary lg" href="#pricing">Start free — no card required</a>
+          <a class="btn ghost lg" href="#how-it-works">See how it works</a>
+        </div>
+        <p class="hero-note">Works with Postgres, Snowflake, BigQuery, and CSV uploads.</p>
+      </div>
+
+      <div class="mock" aria-hidden="true">
+        <div class="mock-bar">
+          <span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span>
+          <span class="mock-title">Revenue overview — Q3</span>
+        </div>
+        <div class="mock-grid">
+          <div class="stat-tile">
+            <div class="stat-label">Revenue</div>
+            <div class="stat-value">$482K</div>
+            <div class="stat-delta">↑ 12.4%</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Active customers</div>
+            <div class="stat-value">3,204</div>
+            <div class="stat-delta">↑ 4.1%</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Churn rate</div>
+            <div class="stat-value">1.8%</div>
+            <div class="stat-delta">↓ 0.3pt</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Avg. order value</div>
+            <div class="stat-value">$150</div>
+            <div class="stat-delta">↑ 2.9%</div>
+          </div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-card">
+            <h4>Monthly revenue vs. target</h4>
+            <div class="bars">
+              <div class="bar" style="height: 42%"></div>
+              <div class="bar b2" style="height: 34%"></div>
+              <div class="bar" style="height: 55%"></div>
+              <div class="bar b2" style="height: 48%"></div>
+              <div class="bar" style="height: 68%"></div>
+              <div class="bar b2" style="height: 58%"></div>
+              <div class="bar" style="height: 82%"></div>
+              <div class="bar b2" style="height: 70%"></div>
+              <div class="bar" style="height: 95%"></div>
+            </div>
+            <div class="legend-row">
+              <span><span class="swatch" style="background:var(--accent)"></span>Actual</span>
+              <span><span class="swatch" style="background:color-mix(in srgb, var(--accent) 55%, var(--surface))"></span>Target</span>
+            </div>
+          </div>
+          <div class="chart-card">
+            <h4>Revenue by channel</h4>
+            <div class="donut-wrap">
+              <div class="donut"></div>
+              <div class="donut-legend">
+                <span><span class="swatch" style="background:var(--accent)"></span>Direct — 52%</span>
+                <span><span class="swatch" style="background:#eb6834"></span>Partner — 26%</span>
+                <span><span class="swatch" style="background:#1baf7a"></span>Referral — 22%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-strip">
+      <div class="stat"><div class="num">6,800+</div><div class="label">teams analyzing data with Lumen</div></div>
+      <div class="stat"><div class="num">42M</div><div class="label">questions answered</div></div>
+      <div class="stat"><div class="num">99.95%</div><div class="label">uptime last 12 months</div></div>
+      <div class="stat"><div class="num">&lt;2s</div><div class="label">median query response</div></div>
+    </section>
+
+    <section id="features">
+      <div class="section-head">
+        <span class="eyebrow">Features</span>
+        <h2>Everything an analyst does, in one place</h2>
+        <p>Skip the SQL back-and-forth. Ask questions, verify the logic, and share results your team already trusts.</p>
+      </div>
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon">✦</div>
+          <h3>Ask in plain English</h3>
+          <p>Type a question the way you'd ask a colleague. Lumen writes and runs the query, and shows its work.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">▤</div>
+          <h3>Charts that pick themselves</h3>
+          <p>The right chart for the question — trend, comparison, or breakdown — with accessible, consistent color.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⇄</div>
+          <h3>Connects to your warehouse</h3>
+          <p>Postgres, Snowflake, BigQuery, or a CSV upload. Read-only credentials, nothing leaves your account.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◧</div>
+          <h3>Explainable by design</h3>
+          <p>Every answer comes with the underlying query and assumptions — so you can check it, not just trust it.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⌗</div>
+          <h3>Shareable dashboards</h3>
+          <p>Turn any answer into a live tile. Dashboards refresh on schedule and stay in sync with the source data.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◎</div>
+          <h3>Built-in alerts</h3>
+          <p>Watch a metric and get notified the moment it moves outside the range you'd expect.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works">
+      <div class="section-head">
+        <span class="eyebrow">How it works</span>
+        <h2>From question to answer in three steps</h2>
+        <p>No pipelines to build and no dashboards to maintain before you get your first answer.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Connect a source</h3>
+          <p>Point Lumen at your warehouse or upload a spreadsheet. Schemas are indexed automatically.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Ask your question</h3>
+          <p>"Which regions grew fastest last quarter?" Lumen drafts the query and a first-pass chart.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Verify and share</h3>
+          <p>Check the logic, adjust if needed, then pin it to a dashboard or send it to your team.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <div class="section-head">
+        <span class="eyebrow">Pricing</span>
+        <h2>Simple plans that scale with your team</h2>
+        <p>Start free. Upgrade when you need more seats, more connections, or more history.</p>
+      </div>
+      <div class="pricing">
+        <div class="plan">
+          <div class="plan-name">Starter</div>
+          <div class="plan-price">$0<small>/month</small></div>
+          <div class="plan-desc">For individuals exploring their first dataset.</div>
+          <ul class="plan-features">
+            <li>1 data source</li>
+            <li>100 questions / month</li>
+            <li>7-day query history</li>
+            <li>Community support</li>
+          </ul>
+          <a class="btn ghost" href="#top">Start free</a>
+        </div>
+        <div class="plan featured">
+          <span class="plan-badge">Most popular</span>
+          <div class="plan-name">Team</div>
+          <div class="plan-price">$49<small>/user/month</small></div>
+          <div class="plan-desc">For teams who share dashboards and track metrics together.</div>
+          <ul class="plan-features">
+            <li>Unlimited data sources</li>
+            <li>Unlimited questions</li>
+            <li>Shared dashboards & alerts</li>
+            <li>1-year query history</li>
+            <li>Priority support</li>
+          </ul>
+          <a class="btn primary" href="#top">Start free trial</a>
+        </div>
+        <div class="plan">
+          <div class="plan-name">Enterprise</div>
+          <div class="plan-price">Custom</div>
+          <div class="plan-desc">For organizations with advanced security and scale needs.</div>
+          <ul class="plan-features">
+            <li>SSO & audit logs</li>
+            <li>Dedicated support</li>
+            <li>Custom data retention</li>
+            <li>On-prem connectors</li>
+          </ul>
+          <a class="btn ghost" href="#top">Contact sales</a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="cta-band">
+        <h2>See your data answer back</h2>
+        <p>Free to start. No credit card. Connect a source in under five minutes.</p>
+        <div class="hero-cta">
+          <a class="btn primary lg" href="#top">Start free</a>
+          <a class="btn ghost lg" href="#top">Book a demo</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; width:100%;">
+    <span>© 2026 Lumen Analytics. All rights reserved.</span>
+    <div class="foot-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#top">Privacy</a>
+      <a href="#top">Terms</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
