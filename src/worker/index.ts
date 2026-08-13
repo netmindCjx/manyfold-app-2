@@ -182,6 +182,14 @@ app.post('/api/agents/:agentId/chat', async (c) => {
   });
 });
 
+app.get('/api/pi-debug', (c) =>
+  c.json({
+    hasGatewayUrl: !!(c.env.PI_GATEWAY_URL ?? '').trim(),
+    hasGatewayToken: !!(c.env.PI_GATEWAY_TOKEN ?? '').trim(),
+    hasSpriteToken: !!(c.env.SPRITE_API_TOKEN ?? '').trim(),
+  }),
+);
+
 app.get('/api/pi-ws', async (c) => {
   const required = adminPassword(c.env);
   if (required && !safeEqual(new URL(c.req.url).searchParams.get('admin_password') ?? '', required)) {
