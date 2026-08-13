@@ -32,9 +32,15 @@
     // Manyfold API base. Point at https://api-staging.manyfold.ai via .dev.vars for local dev.
     "MANYFOLD_API_BASE_URL": "https://api.manyfold.ai",
     // "production" enforces https-only and no-private-IP checks on agent URLs.
-    "ENVIRONMENT": "production"
+    "ENVIRONMENT": "production",
+    // WebSocket URL of the pi RPC gateway (see /pi-gateway). Not secret by itself —
+    // the sprite still requires SPRITE_API_TOKEN, and the gateway requires PI_GATEWAY_TOKEN.
+    "PI_GATEWAY_URL": "https://<your-sprite-host>/ws"
   }
   // Optional hardening, neither is required to deploy:
   //   npx wrangler secret put ADMIN_PASSWORD          # locks the app behind a password
   //   npx wrangler secret put CONFIG_ENCRYPTION_KEY   # >=32 chars; otherwise a key is generated and stored in D1
+  // Required for the Pi tab:
+  //   npx wrangler secret put SPRITE_API_TOKEN        # bearer token the sprite's HTTP proxy requires
+  //   npx wrangler secret put PI_GATEWAY_TOKEN         # the gateway's own token (see pi-gateway/.token)
 }

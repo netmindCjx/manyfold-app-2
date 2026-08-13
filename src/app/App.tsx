@@ -11,12 +11,14 @@ import ChatView from './components/ChatView';
 import SettingsView from './components/SettingsView';
 import VideoEditor from './components/VideoEditor';
 import PasswordGate from './components/PasswordGate';
+import PiChatView from './components/PiChatView';
 
-type Tab = 'chat' | 'settings' | 'editor';
+type Tab = 'chat' | 'settings' | 'editor' | 'pi';
 
 const tabFromHash = (): Tab => {
   if (location.hash === '#settings') return 'settings';
   if (location.hash === '#editor') return 'editor';
+  if (location.hash === '#pi') return 'pi';
   return 'chat';
 };
 
@@ -88,6 +90,9 @@ export default function App() {
           <a className={tab === 'editor' ? 'tab active' : 'tab'} href="#editor">
             Editor
           </a>
+          <a className={tab === 'pi' ? 'tab active' : 'tab'} href="#pi">
+            Pi
+          </a>
           <a className={tab === 'settings' ? 'tab active' : 'tab'} href="#settings">
             Settings
           </a>
@@ -98,6 +103,7 @@ export default function App() {
         <ChatView agents={state.agents} initialSession={state.connect.session} refreshState={refreshState} />
       )}
       {tab === 'editor' && <VideoEditor />}
+      {tab === 'pi' && <PiChatView />}
       {tab === 'settings' && (
         <SettingsView agents={state.agents} initialSession={state.connect.session} refreshState={refreshState} />
       )}

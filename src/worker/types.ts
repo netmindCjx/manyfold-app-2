@@ -17,6 +17,13 @@ export interface Env {
   CONFIG_ENCRYPTION_KEY?: string;
   /** Optional: when set, all routes except /api/health and /api/state require x-admin-password. */
   ADMIN_PASSWORD?: string;
+
+  /** https URL of the pi RPC gateway's WebSocket endpoint, e.g. https://<sprite>.sprites.app/ws */
+  PI_GATEWAY_URL?: string;
+  /** Bearer token the gateway itself requires (its own app-level auth, independent of the sprite). */
+  PI_GATEWAY_TOKEN?: string;
+  /** Bearer token required by the sprite's HTTP proxy in front of the gateway. */
+  SPRITE_API_TOKEN?: string;
 }
 
 /** Everything needed to talk to one agent over A2A. */

@@ -13,10 +13,15 @@
  *   GET    /api/agents/:agentId/messages    admin  chat history
  *   DELETE /api/agents/:agentId/messages    admin  reset the conversation
  *   POST   /api/agents/:agentId/chat        admin  one chat turn (text/event-stream)
+ *   GET    /api/pi-ws                        admin* WebSocket bridge to the pi RPC gateway
  *
  * "admin" routes require the x-admin-password header — but only when the
  * ADMIN_PASSWORD secret is set. Without it the app is open, which is what makes
  * zero-config deploys work; set the secret before sharing the URL.
+ *
+ * *A WebSocket handshake can't set custom headers, so /api/pi-ws checks the same
+ * password via an `admin_password` query parameter instead, and is exempted from
+ * the header-based gate below.
  */
 
 import { Hono } from 'hono';
@@ -25,6 +30,7 @@ import { HttpError, type Env } from './types';
 import { ensureSchema } from './db';
 import { ConfigError, safeEqual } from './crypto';
 import { A2AError } from './a2a';
+import { proxyPiWebSocket } from './pi-proxy';
 import {
   cancelConnect,
   disconnectAgent,
@@ -73,10 +79,17 @@ const adminHeaderOk = (c: { env: Env; req: { header: (name: string) => string | 
   return safeEqual(c.req.header('x-admin-password') ?? '', required);
 };
 
-// Everything except /api/health and /api/state needs the password (when one is set).
+// Everything except /api/health, /api/state and /api/pi-ws needs the password (when one is
+// set). /api/pi-ws is a WebSocket upgrade — it can't carry the x-admin-password header, so it
+// checks the same password itself (see proxyPiWebSocket) instead of going through this gate.
 app.use('/api/*', async (c, next) => {
   const path = new URL(c.req.url).pathname;
-  if (path !== '/api/health' && path !== '/api/state' && !adminHeaderOk(c)) {
+  if (
+    path !== '/api/health' &&
+    path !== '/api/state' &&
+    path !== '/api/pi-ws' &&
+    !adminHeaderOk(c)
+  ) {
     throw new HttpError(401, 'admin_password_invalid', 'This deployment requires the admin password.');
   }
   await next();
@@ -167,6 +180,14 @@ app.post('/api/agents/:agentId/chat', async (c) => {
     message: body.message,
     waitUntil: (promise) => c.executionCtx.waitUntil(promise),
   });
+});
+
+app.get('/api/pi-ws', async (c) => {
+  const required = adminPassword(c.env);
+  if (required && !safeEqual(new URL(c.req.url).searchParams.get('admin_password') ?? '', required)) {
+    throw new HttpError(401, 'admin_password_invalid', 'This deployment requires the admin password.');
+  }
+  return proxyPiWebSocket(c.env);
 });
 
 app.all('/api/*', () => {
