@@ -39,7 +39,7 @@
     // token creation is blocked on the Fly.io account — swap for a stable sprite URL +
     // SPRITE_API_TOKEN once that's unblocked. Quick tunnels die when the tunnel process
     // stops, so this URL will need to be refreshed after any sprite restart.
-    "PI_GATEWAY_URL": "https://sleeve-coaching-shades-consists.trycloudflare.com/ws"
+    "PI_GATEWAY_URL": "https://compromise-key-titled-arena.trycloudflare.com/ws"
   }
   // Optional hardening, neither is required to deploy:
   //   npx wrangler secret put ADMIN_PASSWORD          # locks the app behind a password
