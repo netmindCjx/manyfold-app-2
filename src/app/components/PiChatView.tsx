@@ -51,8 +51,11 @@ export default function PiChatView() {
     socketRef.current = socket;
 
     socket.onopen = () => setConnState('open');
-    socket.onclose = () => setConnState('closed');
-    socket.onerror = () => setError('Lost connection to the pi gateway.');
+    socket.onclose = (event) => {
+      setConnState('closed');
+      setError(`Lost connection to the pi gateway. (code ${event.code}${event.reason ? `: ${event.reason}` : ''})`);
+    };
+    socket.onerror = () => setError('Lost connection to the pi gateway. (WebSocket error event)');
 
     socket.onmessage = (event) => {
       let parsed: { type?: string } & Record<string, unknown>;
