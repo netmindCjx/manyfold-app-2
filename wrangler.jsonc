@@ -33,14 +33,18 @@
     "MANYFOLD_API_BASE_URL": "https://api.manyfold.ai",
     // "production" enforces https-only and no-private-IP checks on agent URLs.
     "ENVIRONMENT": "production",
-    // WebSocket URL of the pi RPC gateway (see /pi-gateway). Not secret by itself —
-    // the sprite still requires SPRITE_API_TOKEN, and the gateway requires PI_GATEWAY_TOKEN.
-    "PI_GATEWAY_URL": "https://<your-sprite-host>/ws"
+    // WebSocket URL of the pi RPC gateway (see /pi-gateway). Not secret by itself — the
+    // gateway still requires PI_GATEWAY_TOKEN. Currently a Cloudflare quick tunnel
+    // (trycloudflare.com) fronting the gateway directly, since the sprite's own org-auth
+    // token creation is blocked on the Fly.io account — swap for a stable sprite URL +
+    // SPRITE_API_TOKEN once that's unblocked. Quick tunnels die when the tunnel process
+    // stops, so this URL will need to be refreshed after any sprite restart.
+    "PI_GATEWAY_URL": "https://sleeve-coaching-shades-consists.trycloudflare.com/ws"
   }
   // Optional hardening, neither is required to deploy:
   //   npx wrangler secret put ADMIN_PASSWORD          # locks the app behind a password
   //   npx wrangler secret put CONFIG_ENCRYPTION_KEY   # >=32 chars; otherwise a key is generated and stored in D1
   // Required for the Pi tab:
-  //   npx wrangler secret put SPRITE_API_TOKEN        # bearer token the sprite's HTTP proxy requires
-  //   npx wrangler secret put PI_GATEWAY_TOKEN         # the gateway's own token (see pi-gateway/.token)
+  //   npx wrangler secret put PI_GATEWAY_TOKEN        # the gateway's own token (see pi-gateway/.token)
+  //   npx wrangler secret put SPRITE_API_TOKEN        # only needed once fronted by the sprite's own URL again
 }
