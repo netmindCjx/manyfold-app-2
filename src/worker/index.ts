@@ -187,6 +187,7 @@ app.get('/api/pi-debug', (c) =>
     gatewayUrlLen: (c.env.PI_GATEWAY_URL ?? '').length,
     gatewayTokenLen: (c.env.PI_GATEWAY_TOKEN ?? '').length,
     spriteTokenLen: (c.env.SPRITE_API_TOKEN ?? '').length,
+    checkedAt: 'redeploy-check-1',
   }),
 );
 
